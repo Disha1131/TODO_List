@@ -138,6 +138,12 @@
         function setId(In) {
             itemIn = In;
             console.log("item id set", itemIn);
+            itemJsonArrayStr = localStorage.getItem("itemJson");
+            itemJsonArray = JSON.parse(itemJsonArrayStr);
+            var dd = document.getElementById("modaldescription");
+             dd.value = itemJsonArray[itemIn][1];
+            var tt = document.getElementById("modaltitle");
+            tt.value = itemJsonArray[itemIn][0];
         }
         function getAnUpdate() {
             console.log("Updating List....");

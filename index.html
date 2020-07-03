@@ -103,32 +103,48 @@
         crossorigin="anonymous"></script>
 
     <script>
-        function getAnUpdate(){
+        function getAnUpdate() {
             console.log("Updating List....");
             titl = document.getElementById("title").value;
             desc = document.getElementById("description").value;
+            if (titl != "") {
+                if (localStorage.getItem('itemJson') == null) {
+                    itemJsonArray = [];
+                    itemJsonArray.push([titl, desc]);
+                    localStorage.setItem('itemJson', JSON.stringify(itemJsonArray));
+                }
+                else {
+                    itemJsonArrayStr = localStorage.getItem("itemJson");
+                    itemJsonArray = JSON.parse(itemJsonArrayStr);
+                    let flag = false;
+                    //checking for duplicate titles
+                    itemJsonArray.forEach((element) => {
+                        if (titl == element[0])
+                            flag = true;
+                    });
+                    if (flag == false) {
+                        itemJsonArray.push([titl, desc]);
+                        localStorage.setItem('itemJson', JSON.stringify(itemJsonArray));
+                    }
+                    else{
+                        alert("An item with same Title already present!");
+                        console.log("item not added");
+                        return;
+                    }
+                }
+            }
+            update();
+        }
+
+        function update() {
             if (localStorage.getItem('itemJson') == null) {
                 itemJsonArray = [];
-                itemJsonArray.push([titl, desc]);
                 localStorage.setItem('itemJson', JSON.stringify(itemJsonArray));
             }
             else {
                 itemJsonArrayStr = localStorage.getItem("itemJson");
                 itemJsonArray = JSON.parse(itemJsonArrayStr);
-                itemJsonArray.push([titl, desc]);
-                localStorage.setItem('itemJson', JSON.stringify(itemJsonArray));
-            }
-            update();
-        }
-        function update(){
-            if (localStorage.getItem('itemJson') == null) {
-                itemJsonArray = [];
-                localStorage.setItem('itemJson', JSON.stringify(itemJsonArray));
-            }
-            else{
-                itemJsonArrayStr = localStorage.getItem("itemJson");
-                itemJsonArray = JSON.parse(itemJsonArrayStr);
-               
+
             }
             //populate the table
             let tableBody = document.getElementById("tableBody");
@@ -150,7 +166,7 @@
         add.addEventListener("click", getAnUpdate);
         update();
 
-        function deleted(itemIndex){
+        function deleted(itemIndex) {
             console.log("Delete", itemIndex);
             itemJsonArrayStr = localStorage.getItem("itemJson");
             itemJsonArray = JSON.parse(itemJsonArrayStr);
@@ -160,7 +176,7 @@
             update();
         }
 
-        function cleared(){
+        function cleared() {
             console.log("Clearing the storage..");
             localStorage.clear();
             update();

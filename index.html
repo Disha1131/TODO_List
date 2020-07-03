@@ -74,7 +74,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                    <button type="button" id="close" class="btn btn-danger" data-dismiss="modal">Close</button>
                     <button type="button" class="btn btn-success" onclick="edit()">Save changes</button>
                 </div>
             </div>
@@ -242,6 +242,7 @@
                     //editing content of array
                     itemJsonArray.splice(itemIn, 1, [t, d]);
                     localStorage.setItem('itemJson', JSON.stringify(itemJsonArray));
+                    document.getElementById("close").click(); 
                     update();
                 }
                 else {

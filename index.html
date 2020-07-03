@@ -232,7 +232,7 @@
                 itemJsonArray = JSON.parse(itemJsonArrayStr);
                 let flag = false;
                 //checking for duplicate titles
-                itemJsonArray.forEach((element) => {
+                itemJsonArray.forEach((element, index) => {
                     if (t == element[0] && index != itemIn)
                         flag = true;
                 });

@@ -233,7 +233,7 @@
                 let flag = false;
                 //checking for duplicate titles
                 itemJsonArray.forEach((element) => {
-                    if (t == element[0])
+                    if (t == element[0] && index != itemIn)
                         flag = true;
                 });
                 if (flag == false) {

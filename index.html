@@ -51,20 +51,49 @@
             </form>
         </div>
     </nav>
+    <!-- Update Page Modal -->
+    <div class="modal fade" id="edit" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Fill the Entries</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="modaltitle">Title</label>
+                        <input type="text" class="form-control" id="modaltitle" aria-describedby="emailHelp">
+                        <small id="modaltitle" class="form-text text-muted">Add an item to the list</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="description">Description</label>
+                        <textarea class="form-control" id="modaldescription" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-success" onclick="edit()">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div class="container my-4">
         <h2 class="text-center">TODOs List</h2>
         <div class="form-group">
-            <label for="title">Title</label>
+            <label for="tit">Title</label>
             <input type="text" class="form-control" id="title" aria-describedby="emailHelp">
-            <small id="title" class="form-text text-muted">Add an item to the list</small>
+            <small id="til" class="form-text text-muted">Add an item to the list</small>
         </div>
         <div class="form-group">
             <label for="description">Description</label>
             <textarea class="form-control" id="description" rows="3"></textarea>
         </div>
-        <button type="submit" id="add" class="btn btn-primary">Add to List</button>
-        <button type="submit" id="clear" class="btn btn-primary" onclick="cleared()">Clear List</button>
+        <button type="submit" id="add" class="btn btn-success">Add to List</button>
+        <button type="submit" id="clear" class="btn btn-danger" onclick="cleared()">Clear List</button>
 
         <div id="items" class="my-4">
             <h2>Your Items</h2>
@@ -74,7 +103,8 @@
                         <th scope="col">S.NO</th>
                         <th scope="col">Item Title</th>
                         <th scope="col">Item Description</th>
-                        <th scope="col">Action</th>
+                        <th scope="col">Edit</th>
+                        <th scope="col">Delete</th>
                     </tr>
                 </thead>
                 <tbody id="tableBody">
@@ -82,6 +112,7 @@
                         <th scope="row">1</th>
                         <td>Get some coffee</td>
                         <td>I need coffee as I am a coder.</td>
+                        <td><button class="btn btn-primary btn-sm">Edit</button></td>
                         <td><button class="btn btn-primary btn-sm">Delete</button></td>
                     </tr>
 
@@ -103,6 +134,11 @@
         crossorigin="anonymous"></script>
 
     <script>
+        var itemIn;
+        function setId(In) {
+            itemIn = In;
+            console.log("item id set", itemIn);
+        }
         function getAnUpdate() {
             console.log("Updating List....");
             titl = document.getElementById("title").value;
@@ -155,17 +191,16 @@
                     <th scope="row">${index + 1}</th>
                     <td>${element[0]}</td>
                     <td>${element[1]}</td>
+                    <td><button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#edit" onclick="setId(${index})">Edit</button></td>
                     <td><button class="btn btn-primary btn-sm" onclick="deleted(${index})">Delete</button></td>
                     </tr>`;
             });
             tableBody.innerHTML = str;
-            // titl ="";
-            // desc="";
         }
         add = document.getElementById("add");
         add.addEventListener("click", getAnUpdate);
         update();
-
+        
         function deleted(itemIndex) {
             console.log("Delete", itemIndex);
             itemJsonArrayStr = localStorage.getItem("itemJson");
@@ -180,6 +215,51 @@
             console.log("Clearing the storage..");
             localStorage.clear();
             update();
+        }
+
+        function edit() {
+            console.log("updating the item..", itemIn);
+            t = document.getElementById("modaltitle").value;
+            d = document.getElementById("modaldescription").value;
+            if (t != "") {
+                itemJsonArrayStr = localStorage.getItem("itemJson");
+                itemJsonArray = JSON.parse(itemJsonArrayStr);
+                let flag = false;
+                //checking for duplicate titles
+                itemJsonArray.forEach((element) => {
+                    if (t == element[0])
+                        flag = true;
+                });
+                if (flag == false) {
+                    let temp = [];
+                    temp.push([t, d]);
+                    //editing content of array
+                    itemJsonArray.splice(itemIn, 1, temp);
+                    localStorage.setItem('itemJson', JSON.stringify(itemJsonArray));
+                    // update();
+                }
+                else {
+                    alert("An item with same Title already present!");
+                    console.log("item not added");
+                    return;
+                }
+            }
+            else {
+                alert("Please enter a title!");
+            }
+            let tableBody = document.getElementById("tableBody");
+            let str = "";
+            itemJsonArray.forEach((element, index) => {
+                str += `
+                <tr>
+                    <th scope="row">${index + 1}</th>
+                    <td>${element[0]}</td>
+                    <td>${element[1]}</td>
+                    <td><button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#edit" onclick="setId(${index})">Edit</button></td>
+                    <td><button class="btn btn-danger btn-sm" onclick="deleted(${index})">Delete</button></td>
+                    </tr>`;
+            });
+            tableBody.innerHTML = str;
         }
 
     </script>

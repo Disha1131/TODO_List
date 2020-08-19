@@ -202,6 +202,8 @@
                     </tr>`;
             });
             tableBody.innerHTML = str;
+            document.getElementById("description").value = "";
+            document.getElementById('title').value = "";
         }
         add = document.getElementById("add");
         add.addEventListener("click", getAnUpdate);
